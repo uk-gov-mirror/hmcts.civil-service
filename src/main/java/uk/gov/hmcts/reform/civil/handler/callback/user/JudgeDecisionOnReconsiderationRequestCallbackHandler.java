@@ -83,30 +83,35 @@ public class JudgeDecisionOnReconsiderationRequestCallbackHandler extends Callba
     }
 
     private CallbackResponse getUpholdingPreviousOrderReason(CallbackParams callbackParams) {
-        CaseData.CaseDataBuilder<?, ?> caseDataBuilder = callbackParams.getCaseData().toBuilder();
 
         Optional<Element<CaseDocument>> sdoDocLatest = callbackParams.getCaseData().getSystemGeneratedCaseDocuments().stream().filter(
             caseDocumentElement -> caseDocumentElement.getValue().getDocumentType().equals(
                 DocumentType.SDO_ORDER)).sorted(Comparator.comparing(
-                    caseDocumentElement -> caseDocumentElement.getValue().getCreatedDatetime(),
+            caseDocumentElement -> caseDocumentElement.getValue().getCreatedDatetime(),
             Comparator.reverseOrder()
         )).findFirst();
 
-        if (featureToggleService.isWelshEnabledForMainCase()
-            && (callbackParams.getCaseData().isClaimantBilingual() || callbackParams.getCaseData().isRespondentResponseBilingual())) {
-            caseDataBuilder.bilingualHint(YesOrNo.YES);
-        }
-
-        if (sdoDocLatest.isPresent()) {
-            String sdoDate = formatLocalDateTime(sdoDocLatest.get().getValue().getCreatedDatetime(), DATE);
-            caseDataBuilder.upholdingPreviousOrderReason(UpholdingPreviousOrderReason.builder()
-                                                             .reasonForReconsiderationTxtYes(String.format(
-                                                                 UPHOLDING_PREVIOUS_ORDER_REASON,
-                                                                 sdoDate
-                                                             )).build());
-        }
         return AboutToStartOrSubmitCallbackResponse.builder()
-            .data(caseDataBuilder.build().toMap(objectMapper))
+            .data(updateCaseData(
+                callbackParams.getCaseData(),
+                caseDataBuilder -> {
+                    if (featureToggleService.isWelshEnabledForMainCase()
+                        && (callbackParams.getCaseData().isClaimantBilingual()
+                        || callbackParams.getCaseData().isRespondentResponseBilingual())) {
+                        caseDataBuilder.bilingualHint(YesOrNo.YES);
+                    }
+
+                    if (sdoDocLatest.isPresent()) {
+                        String sdoDate = formatLocalDateTime(sdoDocLatest.get().getValue().getCreatedDatetime(), DATE);
+                        caseDataBuilder.upholdingPreviousOrderReason(UpholdingPreviousOrderReason.builder()
+                                                                         .reasonForReconsiderationTxtYes(
+                                                                             String.format(
+                                                                                 UPHOLDING_PREVIOUS_ORDER_REASON,
+                                                                                 sdoDate
+                                                                             )).build());
+                    }
+                }
+            ).toMap(objectMapper))
             .build();
     }
 

@@ -6,10 +6,12 @@ import uk.gov.hmcts.reform.ccd.client.model.AboutToStartOrSubmitCallbackResponse
 import uk.gov.hmcts.reform.ccd.client.model.CallbackResponse;
 import uk.gov.hmcts.reform.ccd.client.model.SubmittedCallbackResponse;
 import uk.gov.hmcts.reform.civil.model.BusinessProcess;
+import uk.gov.hmcts.reform.civil.model.CaseData;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import static java.util.Optional.ofNullable;
 
@@ -116,4 +118,11 @@ public abstract class CallbackHandler {
     public String generateDocumentName(String formName, final String caseReference) {
         return String.format(formName, caseReference);
     }
+
+    protected CaseData updateCaseData(CaseData caseData, Consumer<CaseData.CaseDataBuilder<?, ?>> builderConsumer) {
+        CaseData.CaseDataBuilder<?, ?> caseDataBuilder = caseData.toBuilder();
+        builderConsumer.accept(caseDataBuilder);
+        return caseDataBuilder.build();
+    }
+
 }
