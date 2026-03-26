@@ -70,5 +70,6 @@ public enum CamundaProcessIdentifier {
     NotifyDecisionOnReconsiderationRequestNotifier,
     SettleClaimPaidInFullNotificationNotifier,
     ClaimantResponsePartAdmitPayImmediatelyNotifier,
-    DJ_NON_DIVERGENT_NOTIFIER;
+    DJ_NON_DIVERGENT_NOTIFIER,
+    RequestJudgementByAdmissionNotifyParties;
 }
