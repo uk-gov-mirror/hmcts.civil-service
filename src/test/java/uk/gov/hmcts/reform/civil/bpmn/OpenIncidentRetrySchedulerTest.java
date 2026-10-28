@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 class OpenIncidentRetrySchedulerTest extends BpmnBaseTest {
 
     private static final String TOPIC_NAME = "INCIDENT_RETRY_EVENT";
-    private static final String CRON = "0 1 23 * * ?";
+    private static final String CRON = "0 0 8-18,23 * * ?";
 
     OpenIncidentRetrySchedulerTest() {
         super("open_incident_retry_scheduler.bpmn", "INCIDENT_RETRY_SCHEDULER");
@@ -36,7 +36,22 @@ class OpenIncidentRetrySchedulerTest extends BpmnBaseTest {
         assertCronTriggerFiresAtExpectedTime(
             CronExpression.parse(CRON),
             LocalDateTime.of(2024, 11, 30, 0, 0),
-            LocalDateTime.of(2024, 11, 30, 23, 1)
+            LocalDateTime.of(2024, 11, 30, 8, 0)
+        );
+        assertCronTriggerFiresAtExpectedTime(
+            CronExpression.parse(CRON),
+            LocalDateTime.of(2024, 11, 30, 8, 0),
+            LocalDateTime.of(2024, 11, 30, 9, 0)
+        );
+        assertCronTriggerFiresAtExpectedTime(
+            CronExpression.parse(CRON),
+            LocalDateTime.of(2024, 11, 30, 18, 0),
+            LocalDateTime.of(2024, 11, 30, 23, 0)
+        );
+        assertCronTriggerFiresAtExpectedTime(
+            CronExpression.parse(CRON),
+            LocalDateTime.of(2024, 11, 30, 23, 0),
+            LocalDateTime.of(2024, 12, 1, 8, 0)
         );
 
         List<ExternalTask> externalTasks = getExternalTasks();

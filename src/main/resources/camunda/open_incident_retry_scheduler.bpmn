@@ -4,7 +4,7 @@
     <bpmn:startEvent id="Event_1tq0lqc">
       <bpmn:outgoing>Flow_0hj21ai</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_0y9pici">
-        <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">0 1 23 * * ?</bpmn:timeCycle>
+        <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">0 0 8-18,23 * * ?</bpmn:timeCycle>
       </bpmn:timerEventDefinition>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_0hj21ai" sourceRef="Event_1tq0lqc" targetRef="Activity_0quu8p1" />
